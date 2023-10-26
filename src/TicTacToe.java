@@ -10,31 +10,52 @@ public class TicTacToe {
     static Scanner scanner = new Scanner(System.in);
     static char player = 'X';
     static boolean gameOver = false;
-    static boolean winner = false;
+    static char winnerPlayer = ' ';
 
     public static void main(String[] args) {
 
         initBoard(board);
+
+        System.out.println("Bienvenido al juego Tic Tac Toe");
+
         printBoard(board);
+
         while (!gameOver) {
-            System.out.println("Jugador " + player + "\n Ingrese la fila: ");
+
+            System.out.print("Jugador " + player + "\nIngrese la fila: ");
             int row = scanner.nextInt() - 1;
-            System.out.println("Ingrese la columna: ");
+            System.out.print("\nIngrese la columna: ");
             int column = scanner.nextInt() - 1;
 
             if (isvalidMove(board, row, column)) {
 
                 board[row][column] = player;
+
+                winnerPlayer = winner(board);
+
+                if (winnerPlayer != ' ') {
+                    gameOver = true;
+                } else if (isFull(board)) {
+                    gameOver = true;
+                }
+
                 printBoard(board);
-                gameOver = isFull(board);
                 player = player == 'X' ? 'O' : 'X';
 
-
             } else {
-                System.out.println("Movimiento invalido");
+                System.out.println(ANSI_RED + "Movimiento no válido" + ANSI_RESET);
+                continue;
             }
+
+
         }
 
+
+        if (winnerPlayer != ' ') {
+            System.out.println("El ganador es el jugador " + winnerPlayer);
+        } else {
+            System.out.println("Empate");
+        }
 
     }
 
@@ -90,6 +111,49 @@ public class TicTacToe {
         }
 
         return true;
+    }
+
+
+    //     board
+    // 0,0 | 0,1 | 0,2
+    // 1,0 | 1,1 | 1,2
+    // 2,0 | 2,1 | 2,2
+
+    static char winner(char[][] board) {
+
+
+        // horizontal
+
+        for (int row = 0; row < board.length; row++) {
+            if (board[row][0] != ' ' && board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
+                return board[row][0];
+            }
+        }
+
+
+        // vertical
+
+        for (int column = 0; column < board.length; column++) {
+            if (board[0][column] != ' ' && board[0][column] == board[1][column] && board[1][column] == board[2][column]) {
+                return board[0][column];
+            }
+        }
+
+
+        // diagonal principal
+
+        if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            return board[0][0];
+        }
+
+        // diagonal secundaria
+
+        if (board[2][0] != ' ' && board[2][0] == board[1][1] && board[1][1] == board[0][2]) {
+            return board[2][0];
+        }
+
+        return ' ';
+
     }
 
 
